@@ -1,22 +1,21 @@
 package graphics3D;
 
-//座標、uv座標、法線などPolygon3Dの頂点の役割をする
+//頂点として必要な情報をいくつか保持する
 public class Vertex{
-  public Point3D pos;
-  public Point3D absPos;//絶対座標
-  public double u,v;
-  public Point3D normal;
-
+  public final Point3D pos;
+  public final Point3D normal;//フォンシェーディングのためこの頂点の法線を持つ
+  public final double u,v;//テクスチャマッピングのためにテクスチャ上の座標を保持する
 
   public Vertex(Point3D pos,Point3D normal){
     this.pos = pos;
     this.normal = normal;
+    u = v = 0;
   }
 
-  public Vertex(Point3D pos,double u,double v,Point3D normal){
+  public Vertex(Point3D pos,Point3D normal,double u,double v){
     this.pos = pos;
+    this.normal = normal;
     this.u = u;
     this.v = v;
-    this.normal = normal;
   }
 }

@@ -1,100 +1,73 @@
 package graphics3D;
 
-//視点のx,y,z見ている方向を格納する
 public class Camera{
-  private Point3D position;
-  private double bdire = 0.0;//横
-  private double vdire = 0.0;//縦
+  private double x,y,z;//位置
+  private double moveSpeed = 6.0;//動く速さ
 
-  public static int speed = 6;
+  //ラジアン
+  private double yaw;//横
+  private double pitch;//縦
+  private double rotateSpeed = Math.PI / 180.0;//回転する速さ
 
-  public void setBounds(Point3D position){
-    this.position = position;
+  public Camera(){}
+
+  public Camera(Point3D pos,double yaw,double pitch){
+    x = pos.x;
+    y = pos.y;
+    z = pos.z;
+    this.yaw = yaw;
+    this.pitch = pitch;
   }
 
-  public void setX(double x){
-    this.position.x = x;
-  }
-
-  public void setY(double y){
-    this.position.y = y;
-  }
-
-  public void setZ(double z){
-    this.position.z = z;
-  }
-
-  public void setBVdire(int b,int v){
-    bdire = b;
-    vdire = v;
-  }
-
-  //1/10°づつ必要になるから3600になっている
-  public void setBdire(double b){
-    bdire = ((b % 3600) + 3600) % 3600;
-  }
-
-  public void setVdire(double v){
-    vdire = ((v % 3600) + 3600) % 3600;
+  public Point3D getPosition(){
+    return new Point3D(x,y,z);
   }
 
   public double getX(){
-    return position.x;
+    return x;
   }
 
   public double getY(){
-    return position.y;
+    return y;
   }
 
   public double getZ(){
-    return position.z;
+    return z;
   }
 
-  public double getBdire(){
-    return bdire;
+  public void setX(double x){
+    this.x = x;
   }
 
-  public double getVdire(){
-    return vdire;
+  public void setY(double y){
+    this.y = y;
   }
 
-  public void toFront(){
-    position.z = getZ() - (int)Math.round(Utility.COS[(int)Math.round(getBdire())] * speed);
-    position.x = getX() + (int)Math.round(Utility.SIN[(int)Math.round(getBdire())] * speed);
+  public void setZ(double z){
+    this.z = z;
   }
 
-  public void toBack(){
-    position.z = getZ() + (int)Math.round(Utility.COS[(int)Math.round(getBdire())] * speed);
-    position.x = getX() - (int)Math.round(Utility.SIN[(int)Math.round(getBdire())] * speed);
+  public double getYaw(){
+    return yaw;
   }
 
-  public void toRight(){
-    int theta = (int)Math.round((getBdire() + 900) % 3600);
-    position.z = getZ() - (int)Math.round(Utility.COS[theta] * speed);
-    position.x = getX() + (int)Math.round(Utility.SIN[theta] * speed);
+  public double getPitch(){
+    return pitch;
   }
 
-  public void toLeft(){
-    int theta = (int)Math.round((getBdire() + 900) % 3600);
-    position.z = getZ() + (int)Math.round(Utility.COS[theta] * speed);
-    position.x = getX() - (int)Math.round(Utility.SIN[theta] * speed);
+  public void setYaw(double yaw){
+    this.yaw = yaw;
   }
 
-  public Camera(Point3D position,double bdire,double vdire){
-    this.position = position;
-    this.bdire = bdire;
-    this.vdire = vdire;
+  public void setPitch(double pitch){
+    this.pitch = pitch;
   }
 
-  @Override
-  public String toString() {
-    String s = "<html>" +
-    "x:" + getX() + "<br>" +
-    "y:" + getY() + "<br>" +
-    "z:" + getZ() + "<br>" +
-    "b:" + getBdire() / 10 + "<br>" +
-    "v:" + getVdire() / 10 +
-    "</html>";
-    return s;
+  public double getMoveSpeed(){
+    return moveSpeed;
+  }
+
+  public double getRotateSpeed(){
+    return rotateSpeed;
   }
 }

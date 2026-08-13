@@ -1,36 +1,47 @@
 package graphics3D;
 
-//3次元の頂点を格納する
-//ベクトルの計算も一部格納する
+/*//可変の
+class MutPoint3D{
+}*/
+
+//3D座標をdoubleで表す
 public class Point3D{
-  public double x;
-  public double y;
-  public double z;
+  public final double x,y,z;
 
-  //長さ1に正規化する
-  public Point3D normalize(){
-    double len = Math.sqrt(x * x + y * y + z * z);
-    if(len == 0){
-      return new Point3D(0, 0, 0);
-    }
-    double scale = 1.0 / len;
-    return new Point3D(x * scale, y * scale, z * scale);
+  public Point3D(){
+    x = y = z = 0;
   }
 
-  //内積
-  public double dot(Point3D vec){
-    return x * vec.x + y * vec.y + z * vec.z;
-  }
-
-  public Point3D(Point3D p3){
-    this.x = p3.x;
-    this.y = p3.y;
-    this.z = p3.z;
-  }
-
-  public Point3D(double x,double y,double z) {
+  public Point3D(double x,double y,double z){
     this.x = x;
     this.y = y;
     this.z = z;
+  }
+
+  //単位ベクトルを返す
+  public Point3D normalize(){
+    double norm = Math.sqrt(dot(this));
+
+    return new Point3D(x / norm,y / norm,z / norm);
+  }
+
+  //内積
+  public double dot(Point3D p){
+    return x * p.x + y * p.y + z * p.z;
+  }
+
+  //ベクトル加算した新しいインスタンスを返す
+  public Point3D add(Point3D p){
+    return new Point3D(x + p.x,y + p.y,z + p.z);
+  }
+
+  //減算
+  public Point3D sub(Point3D p){
+    return new Point3D(x - p.x,y - p.y,z - p.z);
+  }
+
+  @Override
+  public String toString(){
+    return "Point3D(" + x + " , " + y + " , " + z + ")";
   }
 }

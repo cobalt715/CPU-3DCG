@@ -1,64 +1,65 @@
 import java.awt.*;
+import java.awt.image.*;
 import javax.swing.*;
-import graphics3D.*; 
+import graphics3D.*;
 
-public class MouseInput {
-  private JFrame frame;
+public class MouseInput{
   private Robot robot;
-  private Point center;
-  private double sensitivity = 1.0;
-  private boolean first = true;
-  private int lastX, lastY;
-  private boolean enter = false;
 
-  public MouseInput(JFrame frame){
-    this.frame = frame;
+  private final static BufferedImage blankCursor;
+  private final static Cursor invisibleCursor;//透明カーソル
+
+  private static final int centerX,centerY;
+
+  private boolean first = true;//特定のタイミングでカーソルを画面真ん中にしないといけないため
+
+  static{
+    blankCursor = new BufferedImage(1,1,BufferedImage.TYPE_INT_ARGB);
+    blankCursor.setRGB(0,0,0);
+
+    invisibleCursor = Toolkit.getDefaultToolkit().createCustomCursor(blankCursor,new Point(0, 0),"invisible");
+
+    Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+    centerX = screenSize.width / 2;
+    centerY = screenSize.height / 2;
+  }
+
+  public MouseInput(){
     try{
       robot = new Robot();
-    }catch (AWTException e){
+    }catch(AWTException e){
       e.printStackTrace();
     }
   }
 
-  //毎フレーム画面中心からの相対座標を求めカーソルを中心に戻す
-  public void update(){
-    //Altでマウスロック解除
-    if(Input.keyAlt){
-      frame.setCursor(Cursor.getDefaultCursor());//通常カーソル表示
-      enter = true;
+  public void update(JFrame frame,Camera camera,boolean keyAlt){
+    //Altでマウスを動かせるようにする
+    if(keyAlt){
+      frame.setCursor(Cursor.getDefaultCursor());
+      first = true;
       return;
     }
-    //画面中央に戻す
-    if(enter){
-      frame.setCursor(Main.blankCursor);//ゲーム中は透明カーソル
-      robot.mouseMove(center.x, center.y);
-      enter = false;
-    }
+
     if(first){
-      //画面中央を記録
-      Point loc = frame.getLocationOnScreen();
-      center = new Point(loc.x + frame.getWidth() / 2,loc.y + frame.getHeight() / 2);
-      robot.mouseMove(center.x, center.y);
+      frame.setCursor(invisibleCursor);//透明カーソルにする
+      robot.mouseMove(centerX,centerY);//画面中央にカーソルを移動
       first = false;
       return;
     }
 
-    //現在位置を取得
     PointerInfo info = MouseInfo.getPointerInfo();
-    if (info == null) return; // 安全対策
-    Point pos = info.getLocation();
+    if(info == null){
+      return;
+    }
 
-    int dx = pos.x - center.x;
-    int dy = pos.y - center.y;
+    Point cursorLocation = info.getLocation();
 
-    // マウスが動いていなければ無視
-    if (dx == 0 && dy == 0) return;
+    int dx = cursorLocation.x - centerX;
+    int dy = cursorLocation.y - centerY;
 
-    //視点の向きを変える
-    Camera p = Main.renderer.camera;
-    p.setBdire(p.getBdire() + dx * sensitivity);
-    p.setVdire(p.getVdire() - dy * sensitivity);
+    camera.setYaw(camera.getYaw() + dx / 200.0);
+    camera.setPitch(camera.getPitch() - dy / 200.0);
 
-    robot.mouseMove(center.x, center.y);
+    robot.mouseMove(centerX,centerY);
   }
 }
