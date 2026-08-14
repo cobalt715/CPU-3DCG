@@ -16,6 +16,9 @@ public class Polygon3D{
 
   public final BufferedImage texture;
 
+  public final int textureWidth;
+  public final int textureHeight;
+
   static{
     BufferedImage image = null;
 
@@ -23,7 +26,7 @@ public class Polygon3D{
       image = ImageIO.read(new File("graphics3D/DEFAULT_TEXTURE.png"));
 
       if(image == null){
-        throw new RuntimeException("Polygon3D staticブロック DEFAULT_TEXTURE.pngがnullでした");
+        throw new RuntimeException("Polygon3D staticブロック graphics3D/DEFAULT_TEXTURE.pngがnullでした");
       }
     }catch(Exception e){
       e.printStackTrace();
@@ -36,10 +39,13 @@ public class Polygon3D{
     Point3D nor = normal(p0,p1,p2);
 
     v0 = new Vertex(p0,nor,0,0);
-    v1 = new Vertex(p1,nor,0,1);
-    v2 = new Vertex(p2,nor,1,0);
+    v1 = new Vertex(p1,nor,0,15);
+    v2 = new Vertex(p2,nor,15,0);
 
     texture = DEFAULT_TEXTURE;
+
+    textureWidth = texture.getWidth();
+    textureHeight = texture.getHeight();
   }
 
   public Polygon3D(Vertex v0,Vertex v1,Vertex v2,BufferedImage texture){
@@ -52,6 +58,9 @@ public class Polygon3D{
     }else{
       this.texture = texture;
     }
+
+    textureWidth = this.texture.getWidth();
+    textureHeight = this.texture.getHeight();
   }
 
   //正規化した法線を返す

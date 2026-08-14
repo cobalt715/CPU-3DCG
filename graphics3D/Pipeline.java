@@ -31,18 +31,22 @@ public class Pipeline{
   }
 
   //相対位置にし回転したPolygon3Dを作る
-  public static Polygon3D toCameraSpace(Polygon3D polygon,Camera camera){
+  public static Polygon3D toCameraSpace(Polygon3D seed,Camera camera){
     Point3D cameraPosition = camera.getPosition();
 
-    Point3D relative0 = polygon.v0.pos.sub(cameraPosition);
-    Point3D relative1 = polygon.v1.pos.sub(cameraPosition);
-    Point3D relative2 = polygon.v2.pos.sub(cameraPosition);
+    Point3D relative0 = seed.v0.pos.sub(cameraPosition);
+    Point3D relative1 = seed.v1.pos.sub(cameraPosition);
+    Point3D relative2 = seed.v2.pos.sub(cameraPosition);
 
     Point3D rotated0 = rotate(relative0,camera);
     Point3D rotated1 = rotate(relative1,camera);
     Point3D rotated2 = rotate(relative2,camera);
 
-    return new Polygon3D(rotated0,rotated1,rotated2);
+    Vertex v0 = new Vertex(rotated0,seed.v0.normal,seed.v0.u,seed.v0.v);
+    Vertex v1 = new Vertex(rotated1,seed.v1.normal,seed.v1.u,seed.v1.v);
+    Vertex v2 = new Vertex(rotated2,seed.v2.normal,seed.v2.u,seed.v2.v);
+
+    return new Polygon3D(v0,v1,v2,seed.texture);
   }
 
   //相対化した位置とCameraをうけとり回転したPolygon3Dを返す
