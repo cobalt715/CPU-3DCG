@@ -7,7 +7,7 @@ public class Pipeline{
     Polygon3D rotated = toCameraSpace(seed,camera);
 
     //表裏確認
-    if(rotated.normal().z > 0) return new Polygon3D[0];
+    if(isFront(rotated)) return new Polygon3D[0];
 
     //クリッピング
     Polygon3D[] clippeds = clipping(rotated);
@@ -66,6 +66,10 @@ public class Pipeline{
     rotatedZ = relative.y * sinX + rotatedZ * cosX;
 
     return new Point3D(rotatedX,rotatedY,rotatedZ);
+  }
+
+  public boolean isFront(Polygon3D rotated){
+    return rotated.normal().z > 0;
   }
 
   public static Polygon3D[] clipping(Polygon3D rotated){

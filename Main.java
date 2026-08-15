@@ -9,6 +9,8 @@ import graphics3D.*;
 //javac *.java graphics3D/*.java
 
 public class Main{
+  private static long lastTime = System.nanoTime();
+
   public static void main(String[] args){
     JFrame frame = new JFrame();
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -41,10 +43,10 @@ public class Main{
       e.printStackTrace();
     }
 
-    Point3D p0 = new Point3D(0,0,-1000);
-    Point3D p1 = new Point3D(0,882,-1000);
-    Point3D p2 = new Point3D(1279,0,-1000);
-    Point3D p3 = new Point3D(1279,882,-1000);
+    Point3D p0 = new Point3D(0,0,-5000);
+    Point3D p1 = new Point3D(0,882,-5000);
+    Point3D p2 = new Point3D(1279,0,-5000);
+    Point3D p3 = new Point3D(1279,882,-5000);
 
     Point3D normal = Polygon3D.normal(p0,p1,p2);
 
@@ -62,6 +64,12 @@ public class Main{
       keyInput.update(camera);
       panel.setImage(rasterizer.render(polygons,camera));
       frame.repaint();
+
+      long now = System.nanoTime();
+      long delta = now - lastTime; // ナノ秒単位
+      double deltaMillis = delta / 1_000_000.0; // ミリ秒に変換
+      lastTime = now;
+      System.out.println("1フレーム前との経過: " + deltaMillis + " ms");
     });
 
     timer.start();

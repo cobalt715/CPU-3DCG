@@ -15,6 +15,7 @@ public class Polygon3D{
   private final static BufferedImage DEFAULT_TEXTURE;
 
   public final BufferedImage texture;
+  public int[] pixels;
 
   public final int textureWidth;
   public final int textureHeight;
@@ -32,7 +33,11 @@ public class Polygon3D{
       e.printStackTrace();
     }
 
-    DEFAULT_TEXTURE = image;
+    DEFAULT_TEXTURE = new BufferedImage(image.getWidth(),image.getHeight(),BufferedImage.TYPE_INT_RGB);
+
+    Graphics2D g2 = DEFAULT_TEXTURE.createGraphics();
+    g2.drawImage(image,0,0,null);
+    g2.dispose();
   }
 
   public Polygon3D(Point3D p0,Point3D p1,Point3D p2){
@@ -43,6 +48,8 @@ public class Polygon3D{
     v2 = new Vertex(p2,nor,15,0);
 
     texture = DEFAULT_TEXTURE;
+
+    pixels = ((DataBufferInt)texture.getRaster().getDataBuffer()).getData();
 
     textureWidth = texture.getWidth();
     textureHeight = texture.getHeight();
@@ -56,8 +63,14 @@ public class Polygon3D{
     if(texture == null){
       this.texture = DEFAULT_TEXTURE;
     }else{
-      this.texture = texture;
+      this.texture = new BufferedImage(texture.getWidth(),texture.getHeight(),BufferedImage.TYPE_INT_RGB);
+
+      Graphics2D g2 = this.texture.createGraphics();
+      g2.drawImage(texture,0,0,null);
+      g2.dispose();
     }
+
+    pixels = ((DataBufferInt)this.texture.getRaster().getDataBuffer()).getData();
 
     textureWidth = this.texture.getWidth();
     textureHeight = this.texture.getHeight();

@@ -13,6 +13,20 @@ public class Rasterizer{
   private int width,height;
   private int centerX,centerY;
 
+  public Rasterizer(int width,int height,Pipeline pipeline){
+    this.pipeline = pipeline;
+    this.width = width;
+    this.height = height;
+    centerX = width / 2;
+    centerY = height / 2;
+
+    image = new BufferedImage(width,height,BufferedImage.TYPE_INT_RGB);
+
+    pixels = ((DataBufferInt)image.getRaster().getDataBuffer()).getData();
+
+    zDistance = new double[pixels.length];
+  }
+
   public BufferedImage render(java.util.List<Polygon3D> polygons,Camera camera){
     Arrays.fill(pixels,0xeeeeeeee);
     Arrays.fill(zDistance,0.0);
@@ -163,23 +177,9 @@ public class Rasterizer{
         double uz = Utility.lerp(leftUZ,rightUZ,t);
         double vz = Utility.lerp(leftVZ,rightVZ,t);
 
-        pixels[y * width + x] = projected.texture.getRGB((int)Math.max(0,Math.min(projected.textureWidth - 1,Math.round(uz / recZ))),
-                                                         (int)Math.max(0,Math.min(projected.textureHeight - 1,Math.round(vz / recZ))));
+        pixels[y * width + x] = projected.pixels[(int)Math.max(0,Math.min(projected.textureHeight - 1,Math.round(vz / recZ))) * projected.textureWidth +
+                                                 (int)Math.max(0,Math.min(projected.textureWidth - 1,Math.round(uz / recZ)))];
       }
     }
-  }
-
-  public Rasterizer(int width,int height,Pipeline pipeline){
-    this.pipeline = pipeline;
-    this.width = width;
-    this.height = height;
-    centerX = width / 2;
-    centerY = height / 2;
-
-    image = new BufferedImage(width,height,BufferedImage.TYPE_INT_RGB);
-
-    pixels = ((DataBufferInt)image.getRaster().getDataBuffer()).getData();
-
-    zDistance = new double[pixels.length];
   }
 }
